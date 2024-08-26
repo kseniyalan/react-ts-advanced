@@ -3,13 +3,22 @@ import { useRef } from 'react';
 import Button from './UI/Button.tsx';
 import Form, { FormHandle } from './UI/Form.tsx';
 import Input from './UI/Input.tsx';
+import { useTimersContext } from '../store/timers-context.tsx';
 
 export default function AddTimer() {
   const form = useRef<FormHandle>(null);
+  const { addTimer } = useTimersContext();
 
   function handleSaveTimer(data: unknown) {
     const extractedData = data as { name: string; duration: string };
-    console.log(extractedData);
+
+    if (!extractedData.name || !extractedData.duration) {
+      return;
+    } 
+
+    // Here duration is a string, but we need it to be a number
+    // So with this "+" we convert it to a number
+    addTimer({ name: extractedData.name, duration: +extractedData.duration });
     form.current?.clear();
   }
 
